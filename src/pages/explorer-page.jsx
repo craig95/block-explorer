@@ -1,9 +1,7 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 
 const ExplorerPage = () => {
-    useEffect(() => {
-
-    });
+    useEffect(() => {});
 
     return <h1>Explorer Page</h1>;
 };
