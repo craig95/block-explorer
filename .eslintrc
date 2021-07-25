@@ -27,6 +27,7 @@
     "prettier/prettier": "error",
     "react/jsx-props-no-spreading": "off",
     "no-use-before-define": "off",
+    "import/no-anonymous-default-export": "off",
     "no-param-reassign": [
       2,
       {

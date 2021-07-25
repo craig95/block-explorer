@@ -2,7 +2,7 @@ import axios from 'axios';
 import _ from 'lodash';
 
 const axiosInstance = axios.create();
-const baseUrl = 'https://blockchain.info/';
+const baseURL = 'https://blockchain.info/';
 
 async function getMergedConfigs(customConfig) {
     const defaultConfig = await getDefaultConfig();
@@ -60,7 +60,7 @@ async function makeDelete(url, data, config) {
 
 async function getDefaultConfig() {
     const defaultRequestConfig = {
-        baseUrl,
+        baseURL,
     };
 
     return {
