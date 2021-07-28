@@ -1,9 +1,13 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
 
 import SearchBar from './components/search-bar';
 import Ticker from './components/ticker';
 import BlocksTable from './components/blocks-table';
+import { getLatestBlocks } from '../../reducers/blocks-reducer/blocks.actions';
+
+const NUMBER_OF_BLOCKS_TO_FETCH = 50;
 
 const ExplorerPageWrapper = styled.div`
     display: flex;
@@ -45,7 +49,10 @@ const PageTitle = styled.h1`
 `;
 
 const ExplorerPage = () => {
-    useEffect(() => {});
+    const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(getLatestBlocks(NUMBER_OF_BLOCKS_TO_FETCH));
+    }, [dispatch]);
 
     return (
         <ExplorerPageWrapper>

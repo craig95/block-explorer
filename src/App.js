@@ -8,7 +8,7 @@ import {
 import { Provider } from 'react-redux';
 import styled from 'styled-components';
 
-import store from './store';
+import store from './reducers/store';
 import ExplorerPage from './pages/explorer/explorer-page';
 import BlockPage from './pages/block-page/block-page';
 import NotFoundPage from './pages/not-found-page';

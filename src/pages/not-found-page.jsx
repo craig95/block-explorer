@@ -21,13 +21,11 @@ const Subtitle = styled.h2`
     margin: 0;
 `;
 
-const NotFoundPage = () => {
-    return (
-        <NotFoundPageWrapper>
-            <Title>404</Title>
-            <Subtitle>Not Found</Subtitle>
-        </NotFoundPageWrapper>
-    );
-};
+const NotFoundPage = () => (
+    <NotFoundPageWrapper>
+        <Title>404</Title>
+        <Subtitle>Not Found</Subtitle>
+    </NotFoundPageWrapper>
+);
 
 export default NotFoundPage;
