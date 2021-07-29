@@ -5,10 +5,88 @@ import { useTable } from 'react-table';
 import _ from 'lodash';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import Spinner from '../../../common-components/spinner';
+import Error from '../../../common-components/error';
+
+const SpinnerWrapper = styled.div`
+    width: 100%;
+    height: 700px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media screen and (max-width: 576px) {
+        height: 500px;
+    }
+`;
 
 const PageTitle = styled.h1`
     font-size: 1.5rem;
-    font-weight: 600;
+    color: rgb(53, 63, 82);
+    font-weight: 700;
+    text-transform: none;
+    font-style: normal;
+    font-family: Inter, Helvetica, sans-serif;
+`;
+
+const TableWrapper = styled.div`
+    display: block;
+    overflow-x: auto;
+    width: 100%;
+`;
+
+const Table = styled.table`
+    overflow: auto;
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto;
+`;
+
+const TableHead = styled.thead`
+    border-bottom: 1px solid rgb(240, 242, 247);
+`;
+
+const TableHeadCell = styled.th`
+    font-weight: 500;
+    font-size: 12px;
+    text-transform: none;
+    font-style: normal;
+    font-family: Inter, Helvetica, sans-serif;
+    color: rgb(103, 113, 133);
+    padding: 0.75rem 0px;
+    text-align: start;
+`;
+
+const TableRow = styled.tr`
+    border-bottom: 1px solid rgb(240, 242, 247);
+`;
+
+const TableRowCell = styled.td`
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: none;
+    font-style: normal;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-family: Inter, Helvetica, sans-serif;
+    color: rgb(53, 63, 82);
+    padding: 0.75rem 0px;
+    text-align: start;
+`;
+
+const TableLink = styled(Link)`
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: none;
+    font-style: normal;
+    font-family: Inter, Helvetica, sans-serif;
+    text-decoration: none;
+    color: rgb(12, 108, 242);
+`;
+
+const ErrorWrapper = styled.div`
+    margin-top: 3rem;
 `;
 
 const BlocksTable = () => {
@@ -26,7 +104,11 @@ const BlocksTable = () => {
                         hash.search(/[^0]+/),
                         hash.length
                     )}`;
-                    return <Link to={`/block/${hash}`}>{abbreviatedHash}</Link>;
+                    return (
+                        <TableLink to={`/block/${hash}`}>
+                            {abbreviatedHash}
+                        </TableLink>
+                    );
                 },
             },
             {
@@ -45,40 +127,61 @@ const BlocksTable = () => {
         ],
         []
     );
-    const { blocks } = useSelector((state) => state.blocksReducer);
+
+    const { isLoading, blocks, blocksFetchError } = useSelector(
+        (state) => state.blocksReducer
+    );
     const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
         useTable({ columns, data: blocks });
+
+    if (isLoading) {
+        return (
+            <SpinnerWrapper>
+                <Spinner />
+            </SpinnerWrapper>
+        );
+    }
+
+    if (blocksFetchError) {
+        return (
+            <ErrorWrapper>
+                <Error>{blocksFetchError}</Error>
+            </ErrorWrapper>
+        );
+    }
 
     return (
         <>
             <PageTitle>Latest blocks</PageTitle>
-            <table {...getTableProps()}>
-                <thead>
-                    {_.map(headerGroups, (headerGroup) => (
-                        <tr {...headerGroup.getHeaderGroupProps()}>
-                            {_.map(headerGroup.headers, (column) => (
-                                <th {...column.getHeaderProps()}>
-                                    {column.render('Header')}
-                                </th>
-                            ))}
-                        </tr>
-                    ))}
-                </thead>
-                <tbody {...getTableBodyProps()}>
-                    {_.map(rows, (row) => {
-                        prepareRow(row);
-                        return (
-                            <tr {...row.getRowProps()}>
-                                {_.map(row.cells, (cell) => (
-                                    <td {...cell.getCellProps()}>
-                                        {cell.render('Cell')}
-                                    </td>
+            <TableWrapper>
+                <Table {...getTableProps()}>
+                    <TableHead>
+                        {_.map(headerGroups, (headerGroup) => (
+                            <tr {...headerGroup.getHeaderGroupProps()}>
+                                {_.map(headerGroup.headers, (column) => (
+                                    <TableHeadCell {...column.getHeaderProps()}>
+                                        {column.render('Header')}
+                                    </TableHeadCell>
                                 ))}
                             </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
+                        ))}
+                    </TableHead>
+                    <tbody {...getTableBodyProps()}>
+                        {_.map(rows, (row) => {
+                            prepareRow(row);
+                            return (
+                                <TableRow {...row.getRowProps()}>
+                                    {_.map(row.cells, (cell) => (
+                                        <TableRowCell {...cell.getCellProps()}>
+                                            {cell.render('Cell')}
+                                        </TableRowCell>
+                                    ))}
+                                </TableRow>
+                            );
+                        })}
+                    </tbody>
+                </Table>
+            </TableWrapper>
         </>
     );
 };

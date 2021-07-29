@@ -12,7 +12,8 @@ import {
     generateArrayOfHeights,
     generateArrayOfTransactionIds,
     setMinerDetailsForBlock,
-} from '../../helpers/generate-array-of-heights';
+    getErrorMessage,
+} from '../../helpers';
 
 export function getLatestBlocks(numberOfBlocksToGet) {
     return async (dispatch) => {
@@ -33,11 +34,20 @@ export function getLatestBlocks(numberOfBlocksToGet) {
 
             setMinerDetailsForBlock(coinbaseTransactions, blocks);
 
+            dispatch(setBlocksFetchError(null));
             dispatch(setBlocks(blocks));
         } catch (error) {
-            dispatch(setBlocksFetchError(error.message));
+            dispatch(
+                setBlocksFetchError(
+                    `An error occurred while loading the blocks. ${_.get(
+                        error,
+                        'response.data.message',
+                        'Unknown Error'
+                    )}`
+                )
+            );
         } finally {
-            setIsLoading(false);
+            dispatch(setIsLoading(false));
         }
     };
 }
@@ -55,9 +65,11 @@ export function getBlockByHash(hash) {
             const updatedBlock = _.first(
                 setMinerDetailsForBlock(coinbaseTransactions, [block])
             );
+
+            dispatch(setBlocksFetchError(null));
             dispatch(setSelectedBlock(updatedBlock));
         } catch (error) {
-            dispatch(setSelectedBlockFetchError(error.message));
+            dispatch(setSelectedBlockFetchError(getErrorMessage(error, hash)));
         } finally {
             dispatch(setIsLoading(false));
         }

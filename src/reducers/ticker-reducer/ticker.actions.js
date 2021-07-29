@@ -20,7 +20,15 @@ export function getTickerValuesForCurrencies(currencies) {
             );
             dispatch(setTickerValues(tickerValues));
         } catch (error) {
-            dispatch(setFetchError(error.message));
+            dispatch(
+                setFetchError(
+                    `An error occurred while loading the ticker values. ${_.get(
+                        error,
+                        'response.data.message',
+                        'Unknown Error'
+                    )}`
+                )
+            );
         } finally {
             dispatch(setIsLoading(false));
         }

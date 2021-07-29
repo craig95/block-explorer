@@ -9,8 +9,9 @@ import {
     BitcoinCashIcon,
     BitcoinIcon,
     EthereumIcon,
-} from '../../../common-components/crypto-icons';
+} from '../../../common-components/icons';
 import { getTickerValuesForCurrencies } from '../../../reducers/ticker-reducer/ticker.actions';
+import Error from '../../../common-components/error';
 
 const currencies = [
     {
@@ -53,11 +54,15 @@ const TickerItemTitle = styled.p`
     margin: 0;
     font-size: 0.9rem;
     font-weight: 600;
+    color: rgb(53, 63, 82);
+    font-family: Inter, Helvetica, sans-serif;
 `;
 
 const TickerItemValue = styled.p`
     margin: 0;
     font-size: 0.9rem;
+    color: rgb(53, 63, 82);
+    font-family: Inter, Helvetica, sans-serif;
 `;
 
 const TickerWrapper = styled.div`
@@ -70,7 +75,10 @@ const TickerWrapper = styled.div`
     }
 
     @media screen and (max-width: 576px) {
-        flex-direction: column;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        justify-content: space-between;
     }
 `;
 
@@ -89,13 +97,18 @@ const TickerItem = ({ name, Icon, values }) => (
 
 TickerItem.propTypes = {
     name: PropTypes.string.isRequired,
-    Icon: PropTypes.node.isRequired,
-    values: PropTypes.shape({}).isRequired,
+    Icon: PropTypes.func.isRequired,
+    values: PropTypes.shape({}),
+};
+TickerItem.defaultProps = {
+    values: {},
 };
 
 const Ticker = () => {
     const dispatch = useDispatch();
-    const { tickerValues } = useSelector((state) => state.tickerReducer);
+    const { tickerValues, fetchError } = useSelector(
+        (state) => state.tickerReducer
+    );
 
     const currencySymbols = useMemo(
         () => _.map(currencies, (currency) => currency.symbol),
@@ -107,10 +120,15 @@ const Ticker = () => {
         60000
     );
 
+    if (fetchError) {
+        return <Error fontSize="12px">{fetchError}</Error>;
+    }
+
     return (
         <TickerWrapper>
             {_.map(currencies, ({ name, symbol, Icon }) => (
                 <TickerItem
+                    key={name}
                     name={name}
                     symbol={symbol}
                     Icon={Icon}

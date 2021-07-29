@@ -25,7 +25,7 @@ const SidebarWrapper = styled.div`
     flex-direction: column;
 
     @media screen and (min-width: 1024px) {
-        flex: 0.3;
+        flex: 0.25;
     }
 
     @media screen and (max-width: 992px) {
@@ -36,12 +36,17 @@ const SidebarWrapper = styled.div`
 
 const MainContentWrapper = styled.div`
     flex: 1;
+    margin-top: 0.67em;
     flex-direction: column;
 `;
 
 const PageTitle = styled.h1`
+    color: rgb(53, 63, 82);
     font-size: 1.5rem;
-    font-weight: 600;
+    font-weight: 700;
+    text-transform: none;
+    font-style: normal;
+    font-family: Inter, Helvetica, sans-serif;
 
     @media screen and (min-width: 1024px) {
         margin-bottom: 1.5rem;

@@ -12,6 +12,7 @@ import store from './reducers/store';
 import ExplorerPage from './pages/explorer/explorer-page';
 import BlockPage from './pages/block-page/block-page';
 import NotFoundPage from './pages/not-found-page';
+import NavBar from './common-components/nav-bar';
 
 const AppWrapper = styled.div`
     padding: 1.5rem;
@@ -25,8 +26,9 @@ const AppWrapper = styled.div`
 function App() {
     return (
         <Provider store={store}>
-            <AppWrapper>
-                <Router>
+            <Router>
+                <NavBar />
+                <AppWrapper>
                     <Switch>
                         <Route path="/explorer" exact>
                             <ExplorerPage />
@@ -41,8 +43,8 @@ function App() {
                             <NotFoundPage />
                         </Route>
                     </Switch>
-                </Router>
-            </AppWrapper>
+                </AppWrapper>
+            </Router>
         </Provider>
     );
 }

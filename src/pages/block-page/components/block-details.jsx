@@ -3,93 +3,206 @@ import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import moment from 'moment';
 
-const DetailItemWrapper = styled.div`
-    display: flex;
+import { addThousandsSeparators } from '../../../helpers';
+import Spinner from '../../../common-components/spinner';
+import Error from '../../../common-components/error';
+
+const SpinnerWrapper = styled.div`
     width: 100%;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    @media screen and (max-width: 576px) {
+        height: 500px;
+    }
 `;
 
-const DetailItemText = styled.p`
-    flex: 1;
+const BlockDetailsWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+const DetailItemWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid rgb(223, 227, 235);
+`;
+
+const DetailItemTitleWrapper = styled.div`
+    width: 50%;
+    padding: 0.8rem 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: auto;
+`;
+
+const DetailItemTitle = styled.p`
+    height: auto;
+    margin: 0;
+    color: rgb(103, 113, 133);
+    font-family: Inter, Helvetica, sans-serif;
+    font-feature-settings: 'calt' 0;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: none;
+    font-style: normal;
+`;
+
+const DetailItemValue = styled.p`
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+    color: rgb(53, 63, 82);
+    font-family: Inter, Helvetica, sans-serif;
+    font-feature-settings: 'calt' 0;
+    font-weight: 500;
+    font-size: 14px;
+    text-transform: none;
+    font-style: normal;
 `;
 
 const BlockDetails = () => {
-    const { isLoading, selectedBlock } = useSelector(
+    const { isLoading, selectedBlock, selectedBlockFetchError } = useSelector(
         (state) => state.blocksReducer
     );
 
-    if (isLoading || !selectedBlock) {
-        return 'Loading...';
+    if ((isLoading || !selectedBlock) && !selectedBlockFetchError) {
+        return (
+            <SpinnerWrapper>
+                <Spinner />
+            </SpinnerWrapper>
+        );
+    }
+
+    if (selectedBlockFetchError) {
+        return <Error>{selectedBlockFetchError}</Error>;
     }
 
     return (
-        <>
+        <BlockDetailsWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Hash</DetailItemText>
-                <DetailItemText>{selectedBlock.hash}</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Hash</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>{selectedBlock.hash}</DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Confirmations</DetailItemText>
-                <DetailItemText>-</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Confirmations</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>-</DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Timestamp</DetailItemText>
-                <DetailItemText>
-                    {moment(selectedBlock.time * 1000).format('YYYY-MM-DD')}
-                </DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Timestamp</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>
+                    {moment(selectedBlock.time * 1000).format(
+                        'YYYY-MM-DD HH:mm'
+                    )}
+                </DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Height</DetailItemText>
-                <DetailItemText>{selectedBlock.height}</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Height</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>{selectedBlock.height}</DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Miner</DetailItemText>
-                <DetailItemText>{selectedBlock.minerName}</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Miner</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>{selectedBlock.minerName}</DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Number of Transactions</DetailItemText>
-                <DetailItemText>{selectedBlock.tx.length}</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Number of Transactions</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>
+                    {addThousandsSeparators(selectedBlock.tx.length)}
+                </DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Difficulty</DetailItemText>
-                <DetailItemText>-</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Difficulty</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>-</DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Merkle Root</DetailItemText>
-                <DetailItemText>{selectedBlock.merkle}</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Merkle Root</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>{selectedBlock.merkle}</DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Version</DetailItemText>
-                <DetailItemText>{selectedBlock.version}</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Version</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>{selectedBlock.version}</DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Bits</DetailItemText>
-                <DetailItemText>{selectedBlock.bits}</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Bits</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>
+                    {addThousandsSeparators(selectedBlock.bits)}
+                </DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Weight</DetailItemText>
-                <DetailItemText>{selectedBlock.weight} WU</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Weight</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>
+                    {addThousandsSeparators(selectedBlock.weight)} WU
+                </DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Size</DetailItemText>
-                <DetailItemText>{selectedBlock.size} bytes</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Size</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>
+                    {addThousandsSeparators(selectedBlock.size)} bytes
+                </DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Nonce</DetailItemText>
-                <DetailItemText>{selectedBlock.nonce}</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Nonce</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>
+                    {addThousandsSeparators(selectedBlock.nonce)}
+                </DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Transaction Volume</DetailItemText>
-                <DetailItemText>{selectedBlock.outputs} BTC</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Transaction Volume</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>
+                    {selectedBlock.outputs / 100000000} BTC
+                </DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Block Reward</DetailItemText>
-                <DetailItemText>{selectedBlock.subsidy}</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Block Reward</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>
+                    {(selectedBlock.subsidy / 100000000).toFixed(8)} BTC
+                </DetailItemValue>
             </DetailItemWrapper>
             <DetailItemWrapper>
-                <DetailItemText>Fee Reward</DetailItemText>
-                <DetailItemText>{selectedBlock.fees}</DetailItemText>
+                <DetailItemTitleWrapper>
+                    <DetailItemTitle>Fee Reward</DetailItemTitle>
+                </DetailItemTitleWrapper>
+                <DetailItemValue>
+                    {selectedBlock.fees / 100000000} BTC
+                </DetailItemValue>
             </DetailItemWrapper>
-        </>
+        </BlockDetailsWrapper>
     );
 };
 

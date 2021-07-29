@@ -48,8 +48,24 @@ function setMinerDetailsForBlock(coinbaseTransactions, blocks) {
     return blocks;
 }
 
+function addThousandsSeparators(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function getErrorMessage(error, hash) {
+    if (error.response.status === 404) {
+        return `Could not find a block with the hash: "${hash}"`;
+    }
+    return `An error occurred while loading the block. ${_.get(
+        error,
+        'response.data.message'
+    )}`;
+}
+
 export {
     generateArrayOfHeights,
     generateArrayOfTransactionIds,
     setMinerDetailsForBlock,
+    addThousandsSeparators,
+    getErrorMessage,
 };
